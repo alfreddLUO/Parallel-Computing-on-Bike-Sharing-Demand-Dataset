@@ -9,7 +9,7 @@
 
 **Group 14** 
 
-**Parallel Computing on Bike Sharing Demand Dataset** 
+## Parallel Computing on Bike Sharing Demand Dataset
 
  
 
@@ -21,7 +21,7 @@ Student Emails : peiyualuo2-c@my.cityu.edu.hk; yihengli5-c@my.cityu.edu.hk; xzho
 
  
 
-**List of Deliverables** 
+### List of Deliverables
 
 
 
@@ -35,55 +35,73 @@ Student Emails : peiyualuo2-c@my.cityu.edu.hk; yihengli5-c@my.cityu.edu.hk; xzho
  
 
  
+### Table of Contents
 
+***1. Introduction***
+
+**1.1 Motivation**
+
+**1.2 Objective**
+
+**1.3 Data Sources**
+
+***2. Explanatory Data Analysis***
+
+**2.1 Outlier Analysis:**
+
+**2.2 Correlation Analysis**
+
+***3. Methodology***
+
+**3.1 Data Processing Pipeline**
+
+**3.2 Data Preprocessing using MapReduce**
+
+*3.2.1 Reducer Phase*
+
+*3.2.2 Mapping Phase*
+
+**3.4 Further Data Processing with Spark**
+
+*3.4.1 Defining the schema*
+
+*3.4.2 Reading data from HDFS*
+
+*3.4.3 Data preprocessing*
+
+*3.4.3 Saving preprocessed data into Hive tables*
+
+**3.5 Machine Learning Models**
+
+*3.5.1 Linear Regression*
+
+*3.5.2 Random Forest*
+
+*3.5.3 Gradient Boost*
+
+*3.5.4 MultiLayer Perceptron*
+
+***4. Discussion***
+
+**4.1 Result Analysis**
+
+**4.2 Future Work**
+
+*4.2.1 Model capability for dynamic data analysis*
+
+*4.2.2 Performance Optimization*
+
+***5. Conclusion***
+
+***6. Reference***
+
+***7. Individual Contribution***
+
+**7. 1 Individual Contribution Table**
+
+**7.2 Individual Contribution Statement**
+***8. Presentation***
  
-
- 
-
- 
-
- 
-
-**Table of Contents** 
-
-1. ***Introduction ............................................................................................................................................................. 2***
-	1. **Motivation ........................................................................................................................................................................... 2** **1.2 Objective .............................................................................................................................................................................. 2** **1.3 Data Sources ....................................................................................................................................................................... 3**
-2. ***Explanatory Data Analysis .................................................................................................................................. 3***
-	1. **Outlier Analysis:................................................................................................................................................................ 3** **2.2 Correlation Analysis: ....................................................................................................................................................... 5**
-3. ***Methodology ............................................................................................................................................................. 6***
-	1. **Data Processing Pipeline ............................................................................................................................................... 6** **3.2 Data Preprocessing using MapReduce ..................................................................................................................... 7**
-		1. Reducer Phase........................................................................................................................................................................................................... 7
-		2. Mapping Phase .......................................................................................................................................................................................................... 7
-
-**3.4 Further Data Processing with Spark ......................................................................................................................... 9** 
-
-* + 1. Defining the schema ............................................................................................................................................................................................... 9
-		2. Reading data from HDFS ...................................................................................................................................................................................... 9
-		3. Data preprocessing .............................................................................................................................................................................................. 10
-
-3.4.3 Saving preprocessed data into Hive tables .............................................................................................................................................. 10 
-
-**3.5 Machine Learning Models ........................................................................................................................................... 11** 
-
-* + 1. Linear Regression................................................................................................................................................................................................. 11
-		2. Random Forest ...................................................................................................................................................................................................... 12
-		3. Gradient Boost ....................................................................................................................................................................................................... 12 3.5.4 MultiLayer Perceptron....................................................................................................................................................................................... 13
-1. ***Discussion ............................................................................................................................................................... 14***
-	1. **Result Analysis ................................................................................................................................................................ 14** **4.2 Future Work ..................................................................................................................................................................... 15**
-
-4.2.1 Model capability for dynamic data analysis ............................................................................................................................................ 15 4.2.2 Performance Optimization .............................................................................................................................................................................. 16 
-
-1. ***Conclusion ............................................................................................................................................................... 16*** ***6. Reference ................................................................................................................................................................. 17*** ***7. Individual Contribution ...................................................................................................................................... 17***
-
-**7. 1 Individual Contribution Table .................................................................................................................................. 17** 
-
-**7.2 Individual Contribution Statement.......................................................................................................................... 17** 
-
- 
-
------- END ------ 
-
-# 1. Introduction
 
 ### 1.1 Motivation
 
@@ -576,12 +594,12 @@ http://capitalbikeshare.com/system-data http://www.freemeteo.com
 
 
 
-|  |  |
-| --- | --- |
-| Team Member  | Contribution Rate  |
-| ZHOU Xin  | 100%  |
-| LI Yiheng  | 100%  |
-| LUO Peiyuan  | 100%  |
+|             |  |
+|-------------| --- |
+| Team Member | Contribution Rate  |
+| LUO Peiyuan | 100%  |
+| LI Yiheng   | 100%  |
+| ZHOU Xin    | 100%  |
 
 In the project, our contribution was holistic and evenly distributed. We collectively brainstormed to define the research question, meticulously crafted the proposal, and engaged in comprehensive data collection and anal 
 
@@ -590,20 +608,6 @@ In the project, our contribution was holistic and evenly distributed. We collect
  
 
 ### 7.2 Individual Contribution Statement
-
-STUDENT ID: 56644501 
-
-STUDENT NAME: ZHOU Xin 
-
- 
-
-My contribution primarily focused on the intricacies of data preparation and experimental execution. A significant portion of my effort was dedicated to the aspect of feature engineering. I meticulously processed the dataset, ensuring its compatibility with various open-source analytical tools. This process involved the application of key techniques like One-hot Encoding and Feature Scaling, both of which are instrumental in enhancing the robustness and accuracy of data analysis. 
-
- 
-
-Meanwhile, my role provided me with a valuable opportunity to delve deep into the realm of Logistic Regression. This experience was not just limited to implementing the algorithm but extended to understanding its foundational concepts and nuances. Additionally, I explored and applied the One-vs-all approach, a technique pivotal in extending binary classifiers to multi-class problems. This experience enriched my understanding of machine learning algorithms and their practical applications. 
-
- 
 
 STUDENT ID: 56642728 
 
@@ -617,23 +621,38 @@ During the project, I made contributions to the implementation of the data proce
 
 Specifically, I was responsible for utilizing the MapReduce framework to perform data preprocessing tasks including missing value analysis and outlier removal. In addition, I am also responsible for storing the preprocessed data in the Hadoop Distributed File System (HDFS). Moreover, I actively contributed to utilizing the capabilities of Spark for advanced data processing operations, taking advantage of its distributed computing capabilities to handle large-scale datasets efficiently. Lastly, I wrote the processed data into a Hive Database to provide a structured and efficient storage system for seamless data analysis and querying. 
 
- 
+### 8. Presentation 
+<div align="center">
+  <img src="./ReadMEImg/image10.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image11.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image12.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image13.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image14.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image15.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image16.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image17.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image18.jpeg">
+</div>
+<div align="center">
+  <img src="./ReadMEImg/image19.jpeg">
+</div>
 
-STUDENT ID: 56641664 
-
-STUDENT NAME: LI Yiheng 
-
- 
-
-During the project, I made contributions to the implementation of machine learning models. This opportunity allowed me to gain valuable hands-on experience by applying the concepts and techniques I learned in CS4480 to the project. Through the whole process, I witnessed how we can implement parallel computing by Spark into real projects. Besides, collaborating with my teammates was a memorable experience, and together we achieved the project's goals. 
-
- 
-
-Specifically, I was responsible for utilizing Linear regression, Random forest, gradient boost, and MultiLayer perceptron algorithms to predict the number of bikes needed under different circumstances. During the implementation process, I applied lots of parallel computing techniques to accelerate the process, including multithreading, distributing memory allocation, and using multi-executors for model training. I have also cooperated with my teammates to adjust the data format, do feature engineering, and tune parameters to optimize the model performance. 
-
- 
-
- 
 
 --- END --- 
 
