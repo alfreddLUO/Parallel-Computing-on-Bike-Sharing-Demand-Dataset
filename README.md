@@ -213,32 +213,35 @@ We implemented a mapper class in the context of a bike test scenario. We extende
 
 We overridden the “map” method to define the logic for the mapping operation. We split the input value into fields using a comma as the delimiter. Then we performed data preprocessing. We handled missing values and outliers. Only if the fields meet certain conditions, the method emits a key-value pair with the bike ID as the key and `1` as the value using the `context. write` method. 
 
- 
+```scala
+import org.apache.hadoop.io.{IntWritable, Text}
+import org.apache.hadoop.mapreduce.Mapper
+
+/**
+ * @author Harry
+ * @since 2023/11/17 22:33
+ */
+class BikeTestMapper extends Mapper[Text, Text, Text, IntWritable] {
+  private val one = new IntWritable(1)
+
+  override
+  def map(key: Text, value: Text, context: Mapper[Text, Text, Text, IntWritable]#Context): Unit = {
+    val fields = value.toString.split(",")
+    //Missing value
+    if (fields.length == 9) {
+      //Outliers
+      if (fields(1).toInt >= 1 && fields(1).toInt <= 4 && fields(2).toInt >= 0 && fields(2).toInt <= 1 && fields(3).toInt >= 0 && fields(3).toInt <= 1 && fields(4).toInt >= 1 && fields(4).toInt <= 4) {
+        if (fields(5).toInt > -1 && fields(6).toInt > -1 && fields(7).toInt > -1 && fields(8).toInt > -1) {
+          context.write(new Text(fields(0)), one)
+        }
+      }
+    }
+  }
+}
+```
 
 
 
-|  |  |
-| --- | --- |
-| ●  | **import** org.apache.hadoop.io.{IntWritable, Text}  |
-| ●  | **import** org.apache.hadoop.mapreduce.Mapper  |
-| ● ●  |  **class** BikeTestMapper **extends** Mapper[Text, Text, Text, IntWritable] {  |
-| ●  |  **private** val one = **new** IntWritable(1)  |
-| ● ●  |   override  |
-| ●  |  def map(key: Text, value: Text, context: Mapper[Text, Text, Text, IntWritable]#Context): Unit = {  |
-| ●  |  val fields = value.toString.split(",")  |
-| ●  |  //Missing Value Analysis  |
-| ●  |  **if** (fields.length == 9) {  |
-| ●  |  //Remove Outliers  |
-| ●  |  **if** (fields(1).toInt >= 1 && fields(1).toInt <= 4 && fields(2).toInt >= 0 && fields(2).toInt <= 1 && fields(3).toInt >= 0 && fields(3).toInt <= 1 && fields(4).toInt >= 1 && fields(4).toInt <= 4) {  |
-| ●  |  **if** (fields(5).toInt > -1 && fields(6).toInt > -1 && fields(7).toInt > -1 && fields(8).toInt > -1) {  |
-| ●  |  context.write(**new** Text(fields(0)), one)  |
-| ●  |  }  |
-| ●  |  }  |
-| ●  |  }  |
-| ●  |  }  |
-| ●  | }  |
-
- 
 
 ###### 3.2.2.1 Missing Value Analysis
 
@@ -280,27 +283,22 @@ In this part, we performed some data processing using Spark. Here is a summary o
 
 we defined the schema for the bike sharing data using the StructType class from the Spark SQL library, which specifies the data types and structure of each field in the data: 
 
- 
-
-
-
-|  |  |
-| --- | --- |
-| ●  | val schema = StructType(Array(  |
-| ●  |  StructField("datetime", StringType, nullable = **true**),  |
-| ●  |  StructField("season", IntegerType, nullable = **true**),  |
-| ●  |  StructField("holiday", IntegerType, nullable = **true**),  |
-| ●  |  StructField("workingday", IntegerType, nullable = **true**),  |
-| ●  |  StructField("weather", IntegerType, nullable = **true**),  |
-| ●  |  StructField("temp", DoubleType, nullable = **true**),  |
-| ●  |  StructField("atemp", DoubleType, nullable = **true**),  |
-| ●  |  StructField("humidity", IntegerType, nullable = **true**),  |
-| ●  |  StructField("windspeed", StringType, nullable = **true**),  |
-| ●  |  StructField("casual", IntegerType, nullable = **true**),  |
-| ●  |  StructField("registered", IntegerType, nullable = **true**),  |
-| ●  |  StructField("count", StringType, nullable = **true**)  |
-| ●  |  ))  |
-
+```scala
+val schema = StructType(Array(
+      StructField("datetime", StringType, nullable = true),
+      StructField("season", IntegerType, nullable = true),
+      StructField("holiday", IntegerType, nullable = true),
+      StructField("workingday", IntegerType, nullable = true),
+      StructField("weather", IntegerType, nullable = true),
+      StructField("temp", DoubleType, nullable = true),
+      StructField("atemp", DoubleType, nullable = true),
+      StructField("humidity", IntegerType, nullable = true),
+      StructField("windspeed", StringType, nullable = true),
+      StructField("casual", IntegerType, nullable = true),
+      StructField("registered", IntegerType, nullable = true),
+      StructField("count", StringType, nullable = true)
+    ))
+```
  
 
 #### 3.4.2 Reading data from HDFS
@@ -308,50 +306,44 @@ we defined the schema for the bike sharing data using the StructType class from 
 We read the bike-sharing data from HDFS and performed preprocessing tasks. Firstly, we loaded the training and test data in CSV format from HDFS using the specified schema. 
 
 
+```scala
+val train = spark.read.format("csv")
+      .schema(schema)
+      .load("hdfs://master:9000/output/train/part-r-00000")
 
-|  |  |
-| --- | --- |
-| ●  | // Read hdfs  |
-| ●  |  val train = spark.read.format("csv")  |
-| ●  |  .schema(schema)  |
-| ●  |  .load("hdfs://master:9000/output/train/part-r-00000")  |
-| ● ●  |   val test = spark.read.format("csv")  |
-| ●  |  .schema(schema)  |
-| ●  |  .load("hdfs://master:9000/output/test/part-r-00000")  |
-
- 
+    val test = spark.read.format("csv")
+      .schema(schema)
+      .load("hdfs://master:9000/output/test/part-r-00000")
+```
 
 #### 3.4.3 Data preprocessing
 
 After reading the data from HDFS, we transformed the columns by splitting and casting the "count" column to IntegerType and casting the "windspeed" column to DoubleType. Additionally, we extract date, hour, year, weekday, and month from the "datetime" column. Finally, we selected the required columns for further analysis and modeling. The resulting DataFrames, trainDF, and testDF, contain the preprocessed data that can be used for building and evaluating machine learning models on the bike sharing data. 
 
  
+```scala
+val trainDF = train.withColumn("count", split(col("count"), "\t").getItem(0))
+      .withColumn("count", col("count").cast(IntegerType))
+      .withColumn("date", to_date(col("datetime")))
+      .withColumn("hour", hour(col("datetime")))
+      .withColumn("year", year(col("datetime")))
+      .withColumn("weekday", dayofweek(col("datetime")))
+      .withColumn("month", month(col("datetime")))
+      .withColumn("windspeed", col("windspeed").cast(DoubleType))
+      .select("date", "hour", "year", "month", "weekday", "season", "holiday", "workingday", "weather", "temp", "atemp", "humidity", "windspeed", "casual", "registered", "count")
 
-
-
-|  |  |
-| --- | --- |
-| ●  |  val trainDF = train.withColumn("count", split(col("count"), "\t").getItem(0))  |
-| ●  |  .withColumn("count", col("count").cast(IntegerType))  |
-| ●  |  .withColumn("date", to\_date(col("datetime")))  |
-| ●  |  .withColumn("hour", hour(col("datetime")))  |
-| ●  |  .withColumn("year", year(col("datetime")))  |
-| ●  |  .withColumn("weekday", dayofweek(col("datetime")))  |
-| ●  |  .withColumn("month", month(col("datetime")))  |
-| ●  |  .withColumn("windspeed", col("windspeed").cast(DoubleType))  |
-| ●  |  .select("date", "hour", "year", "month", "weekday", "season", "holiday", "workingday", "weather", "temp", "atemp", "humidity", "windspeed", "casual", "registered", "count")  |
-| ● ●  |   val testDF = test.withColumn("windspeed", split(col("windspeed"), "\t").getItem(0))  |
-| ●  |  .withColumn("windspeed", col("windspeed").cast(DoubleType))  |
-| ●  |  .withColumn("date", to\_date(col("datetime")))  |
-| ●  |  .withColumn("hour", hour(col("datetime")))  |
-| ●  |  .withColumn("year", year(col("datetime")))  |
-| ●  |  .withColumn("weekday", dayofweek(col("datetime")))  |
-| ●  |  .withColumn("month", month(col("datetime")))  |
-| ●  |  .withColumn("count", lit(0))  |
-| ●  |  .withColumn("casual", lit(0))  |
-| ●  |  .withColumn("registered", lit(0))  |
-| ●  |  .select("date", "hour", "year", "month", "weekday", "season", "holiday", "workingday", "weather", "temp", "atemp", "humidity", "windspeed", "casual", "registered", "count")  |
-
+    val testDF = test.withColumn("windspeed", split(col("windspeed"), "\t").getItem(0))
+      .withColumn("windspeed", col("windspeed").cast(DoubleType))
+      .withColumn("date", to_date(col("datetime")))
+      .withColumn("hour", hour(col("datetime")))
+      .withColumn("year", year(col("datetime")))
+      .withColumn("weekday", dayofweek(col("datetime")))
+      .withColumn("month", month(col("datetime")))
+      .withColumn("count", lit(0))
+      .withColumn("casual", lit(0))
+      .withColumn("registered", lit(0))
+      .select("date", "hour", "year", "month", "weekday", "season", "holiday", "workingday", "weather", "temp", "atemp", "humidity", "windspeed", "casual", "registered", "count")
+```
  
 
  
@@ -360,23 +352,21 @@ After reading the data from HDFS, we transformed the columns by splitting and ca
 
 We saved the preprocessed data into Hive tables named "bike\_train" and "bike\_test". We used the trainDF and testDF DataFrames to store the training and test data, respectively. Firstly, we specified the save mode as "overwrite" to overwrite the data if the tables already existed. Then, we set the format as "hive" to save the data into Hive tables. We included the header in the saved data by setting the "header" option to "true". Next, we provided the path where the data would be saved in HDFS and the names of the Hive tables, which followed the format "database. table". Finally, we used the saveAsTable() method to save the DataFrames as Hive tables. 
 
+```scala
+    trainDF.write.mode("overwrite")
+      .format("hive")
+      .option("header", "true")
+      .option("path", "hdfs://master:9000/user/hive/warehouse/bike/train")
+      .option("dbtable", "default.bike_train") // Hive 表的名称，格式为 "database.table"
+      .saveAsTable("bike_train")
 
-
-|  |  |
-| --- | --- |
-| ●  | //Save the data into hive database  |
-| ●  |  trainDF.write.mode("overwrite")  |
-| ●  |  .format("hive")  |
-| ●  |  .option("header", "true")  |
-| ●  |  .option("path", "hdfs://master:9000/user/hive/warehouse/bike/train")  |
-| ●  |  .option("dbtable", "default.bike\_train") // Hive table name，format:"database.table"  |
-| ●  |  .saveAsTable("bike\_train")  |
-| ● ●  |   testDF.write.mode("overwrite")  |
-| ●  |  .format("hive")  |
-| ●  |  .option("header", "true")  |
-| ●  |  .option("path", "hdfs://master:9000/user/hive/warehouse/bike/test")  |
-| ●  |  .option("dbtable", "default.bike\_test") // Hive table name，format:"database.table"  |
-| ●  |  .saveAsTable("bike\_test")  |
+    testDF.write.mode("overwrite")
+      .format("hive")
+      .option("header", "true")
+      .option("path", "hdfs://master:9000/user/hive/warehouse/bike/test")
+      .option("dbtable", "default.bike_test") // Hive 表的名称，格式为 "database.table"
+      .saveAsTable("bike_test")
+```
 
 ### 3.5 Machine Learning Models
 
@@ -392,32 +382,24 @@ Linear regression is a fundamental and widely used statistical model for predict
 
  
 
+```scala
+// Linear Regression ========== Start
+    val lr = new LinearRegression()
+      .setFeaturesCol("features")
+      .setLabelCol("count")
+      .setMaxIter(10)
+      .setRegParam(0.3)
+      .setElasticNetParam(0.8)
+    val lrModel = lr.fit(trainDataVectorized)
+    val lrPredictions = lrModel.transform(testDataVectorized)
 
-
-|  |  |
-| --- | --- |
-| ●  |  // Linear Regression ========== Start  |
-| ●  |  val lr = new LinearRegression()  |
-| ●  |  .setFeaturesCol("features")  |
-
-
-
-|  |  |
-| --- | --- |
-| ●  |  .setLabelCol("count")  |
-| ●  |  .setMaxIter(10)  |
-| ●  |  .setRegParam(0.3)  |
-| ●  |  .setElasticNetParam(0.8)  |
-| ●  |  val lrModel = lr.fit(trainDataVectorized)  |
-| ●  |  val lrPredictions = lrModel.transform(testDataVectorized)  |
-| ● ●  |  val lrEvaluator = new RegressionEvaluator()  |
-| ●  |  .setLabelCol("count")  |
-| ●  |  .setPredictionCol("prediction")  |
-| ●  |  .setMetricName("rmse")  |
-| ●  |  val lrRmse = lrEvaluator.evaluate(lrPredictions)  |
-| ●  |  println(s"Linear Regression R2 = $lrRmse")  |
-
- 
+    val lrEvaluator = new RegressionEvaluator()
+      .setLabelCol("count")
+      .setPredictionCol("prediction")
+      .setMetricName("rmse")
+    val lrRmse = lrEvaluator.evaluate(lrPredictions)
+    println(s"Linear Regression R2 = $lrRmse")
+```
 
  
 
@@ -430,21 +412,21 @@ Random Forest is an ensemble learning method that combines multiple decision tre
  
 
 
+```scala
+// Random Forest ========== Start
+    val rf = new RandomForestRegressor()
+      .setLabelCol("count")
+      .setFeaturesCol("features")
+    val rfModel = rf.fit(trainDataVectorized)
+    val rfPredictions = rfModel.transform(testDataVectorized)
 
-|  |  |
-| --- | --- |
-| ●  |  // Random Forest ========== Start  |
-| ●  |  val rf = new RandomForestRegressor()  |
-| ●  |  .setLabelCol("count")  |
-| ●  |  .setFeaturesCol("features")  |
-| ●  |  val rfModel = rf.fit(trainDataVectorized)  |
-| ●  |  val rfPredictions = rfModel.transform(testDataVectorized)  |
-| ● ●  |  val rfEvaluator = new RegressionEvaluator()  |
-| ●  |  .setLabelCol("count")  |
-| ●  |  .setPredictionCol("prediction")  |
-| ●  |  .setMetricName("rmse")  |
-| ●  |  val rdRmse = rfEvaluator.evaluate(rfPredictions)  |
-| ●  |  println(s"Random Forest RMSE = $rdRmse")  |
+    val rfEvaluator = new RegressionEvaluator()
+      .setLabelCol("count")
+      .setPredictionCol("prediction")
+      .setMetricName("rmse")
+    val rdRmse = rfEvaluator.evaluate(rfPredictions)
+    println(s"Random Forest RMSE = $rdRmse")
+```
 
 #### 3.5.3 Gradient Boost
 
@@ -452,23 +434,22 @@ Gradient Boost is another ensemble learning technique that creates a prediction 
 
  
 
+```scala
+// Gradient Boost Tree ========== Start
+    val gbt = new GBTRegressor()
+      .setLabelCol("count")
+      .setFeaturesCol("features")
+      .setMaxIter(10)
+    val gbtModel = gbt.fit(trainDataVectorized)
+    val gbtPredictions = gbtModel.transform(testDataVectorized)
 
-
-|  |  |  |
-| --- | --- | --- |
-|  | ●  |  // Gradient Boost Tree ========== Start  |
-|  | ●  |  val gbt = new GBTRegressor()  |
-|  | ●  |  .setLabelCol("count")  |
-| ●  |  .setFeaturesCol("features")  |
-| ●  |  .setMaxIter(10)  |
-| ●  |  val gbtModel = gbt.fit(trainDataVectorized)  |
-| ●  |  val gbtPredictions = gbtModel.transform(testDataVectorized)  |
-| ● ●  |   val gbtEvaluator = new RegressionEvaluator()  |
-| ●  |  .setLabelCol("count")  |
-| ●  |  .setPredictionCol("prediction")  |
-| ●  |  .setMetricName("rmse")  |
-| ●  |  val gbtRmse = gbtEvaluator.evaluate(gbtPredictions)  |
-| ●  |  println(s"Gradient Boost Tree RMSE = $gbtRmse")  |
+    val gbtEvaluator = new RegressionEvaluator()
+      .setLabelCol("count")
+      .setPredictionCol("prediction")
+      .setMetricName("rmse")
+    val gbtRmse = gbtEvaluator.evaluate(gbtPredictions)
+    println(s"Gradient Boost Tree RMSE = $gbtRmse")
+```
 
 #### 3.5.4 MultiLayer Perceptron
 
