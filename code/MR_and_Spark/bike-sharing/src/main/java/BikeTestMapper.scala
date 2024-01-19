@@ -2,7 +2,7 @@ import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.Mapper
 
 /**
- * @author Harry
+ * @author Alfred
  * @since 2023/11/17 22:33
  */
 class BikeTestMapper extends Mapper[Text, Text, Text, IntWritable] {
