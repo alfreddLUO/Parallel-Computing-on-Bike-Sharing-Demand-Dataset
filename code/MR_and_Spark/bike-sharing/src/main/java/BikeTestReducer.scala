@@ -3,7 +3,7 @@ import org.apache.hadoop.mapreduce.Reducer
 
 
 /**
- * @author Harry
+ * @author Alfred
  * @since 2023/11/17 22:33
  */
 class BikeTestReducer extends Reducer[Text, IntWritable, Text, IntWritable] {
