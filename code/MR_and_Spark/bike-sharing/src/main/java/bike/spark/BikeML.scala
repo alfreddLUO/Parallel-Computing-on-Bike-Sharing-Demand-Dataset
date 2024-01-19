@@ -10,7 +10,7 @@ import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types._
 
 /**
- * @author Joe
+ * @author Alfred
  * @since 2023/11/19 13:57
  */
 object BikeML {
